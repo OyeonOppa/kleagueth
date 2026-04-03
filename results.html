@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ผลการแข่งขัน — K-League Thai</title>
+  <meta name="description" content="ผลการแข่งขันฟุตบอลเคลีก K1 K2 ทุกนัด ฤดูกาล 2025 ภาษาไทย">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .matchday-selector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .matchday-selector label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-right: 4px;
+    }
+
+    .matchday-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .matchday-chip {
+      padding: 4px 12px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #fff;
+      transition: all 0.2s;
+      font-family: 'Sarabun', sans-serif;
+    }
+
+    .matchday-chip:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .matchday-chip.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .results-header h2 {
+      font-size: 16px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">K<span>-League</span><span class="nav-logo-badge">TH</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">หน้าแรก</a></li>
+        <li><a href="standings.html">ตารางคะแนน</a></li>
+        <li><a href="results.html" class="active">ผลการแข่งขัน</a></li>
+        <li><a href="clubs.html">สโมสร</a></li>
+      </ul>
+      <span class="nav-season">ฤดูกาล 2025</span>
+      <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <h1>ผลการแข่งขัน</h1>
+    <p>ทุกนัดของ K리그1 & K리그2 ฤดูกาล 2025</p>
+  </div>
+
+  <div class="container main-content">
+
+    <!-- League Tabs -->
+    <div class="league-tabs">
+      <button class="tab-btn active" data-league="K1" onclick="switchLeague('K1', this)">K리그1</button>
+      <button class="tab-btn" data-league="K2" onclick="switchLeague('K2', this)">K리그2</button>
+    </div>
+
+    <!-- Matchday Filter -->
+    <div class="matchday-selector">
+      <label>นัดที่:</label>
+      <div class="matchday-chips" id="matchdayChips">
+        <span style="color:var(--text-muted);font-size:13px;">กำลังโหลด...</span>
+      </div>
+    </div>
+
+    <!-- Match Results -->
+    <div class="results-header">
+      <h2 id="resultsTitle">ผลการแข่งขันทั้งหมด</h2>
+    </div>
+
+    <div class="match-list" id="matchList">
+      <div class="skeleton skeleton-row"></div>
+      <div class="skeleton skeleton-row"></div>
+      <div class="skeleton skeleton-row"></div>
+      <div class="skeleton skeleton-row"></div>
+      <div class="skeleton skeleton-row"></div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p><strong>K-League Thai</strong> — ฐานข้อมูลฟุตบอลเคลีกภาษาไทย</p>
+    <p style="margin-top:6px;">ข้อมูลไม่ใช่ทางการ | ทำโดยแฟนบอล</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/results.js"></script>
+</body>
+</html>

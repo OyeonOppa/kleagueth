@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>สโมสร — K-League Thai</title>
+  <meta name="description" content="รายชื่อสโมสรฟุตบอลเคลีก K1 K2 ข้อมูลสนาม ความจุ ภาษาไทย">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">K<span>-League</span><span class="nav-logo-badge">TH</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">หน้าแรก</a></li>
+        <li><a href="standings.html">ตารางคะแนน</a></li>
+        <li><a href="results.html">ผลการแข่งขัน</a></li>
+        <li><a href="clubs.html" class="active">สโมสร</a></li>
+      </ul>
+      <span class="nav-season">ฤดูกาล 2025</span>
+      <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <h1>สโมสรทั้งหมด</h1>
+    <p>K리그1 & K리그2 ฤดูกาล 2025</p>
+  </div>
+
+  <div class="container main-content">
+
+    <div class="league-tabs">
+      <button class="tab-btn active" data-league="all" onclick="filterClubs('all', this)">ทั้งหมด</button>
+      <button class="tab-btn" data-league="K1" onclick="filterClubs('K1', this)">K리그1</button>
+      <button class="tab-btn" data-league="K2" onclick="filterClubs('K2', this)">K리그2</button>
+    </div>
+
+    <!-- K1 Section -->
+    <div id="clubsSectionK1">
+      <div class="section-header">
+        <h2>K리그1</h2>
+        <div class="line"></div>
+      </div>
+      <div class="clubs-grid" id="clubsGridK1">
+        <div class="skeleton" style="height:160px;border-radius:10px;"></div>
+        <div class="skeleton" style="height:160px;border-radius:10px;"></div>
+        <div class="skeleton" style="height:160px;border-radius:10px;"></div>
+        <div class="skeleton" style="height:160px;border-radius:10px;"></div>
+        <div class="skeleton" style="height:160px;border-radius:10px;"></div>
+        <div class="skeleton" style="height:160px;border-radius:10px;"></div>
+      </div>
+    </div>
+
+    <!-- K2 Section -->
+    <div id="clubsSectionK2" style="margin-top:40px;">
+      <div class="section-header">
+        <h2>K리그2</h2>
+        <div class="line"></div>
+      </div>
+      <div class="clubs-grid" id="clubsGridK2">
+        <div class="skeleton" style="height:160px;border-radius:10px;"></div>
+        <div class="skeleton" style="height:160px;border-radius:10px;"></div>
+        <div class="skeleton" style="height:160px;border-radius:10px;"></div>
+        <div class="skeleton" style="height:160px;border-radius:10px;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p><strong>K-League Thai</strong> — ฐานข้อมูลฟุตบอลเคลีกภาษาไทย</p>
+    <p style="margin-top:6px;">ข้อมูลไม่ใช่ทางการ | ทำโดยแฟนบอล</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/clubs.js"></script>
+</body>
+</html>

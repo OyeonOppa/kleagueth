@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>K-League Thai — ฐานข้อมูลฟุตบอลเคลีก ภาษาไทย</title>
+  <meta name="description" content="ฐานข้อมูลฟุตบอลเคลีกภาษาไทย ตารางคะแนน ผลการแข่งขัน ข้อมูลสโมสร K1 K2">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        K<span>-League</span>
+        <span class="nav-logo-badge">TH</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="active">หน้าแรก</a></li>
+        <li><a href="standings.html">ตารางคะแนน</a></li>
+        <li><a href="results.html">ผลการแข่งขัน</a></li>
+        <li><a href="clubs.html">สโมสร</a></li>
+      </ul>
+      <span class="nav-season">ฤดูกาล 2025</span>
+      <button class="nav-toggle" id="navToggle" aria-label="เมนู">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HOME HERO -->
+  <section class="home-hero">
+    <div class="home-hero-content">
+      <h1>ฟุตบอล<span>เคลีก</span>ภาษาไทย</h1>
+      <p>ตารางคะแนน ผลการแข่งขัน ข้อมูลสโมสรและผู้เล่น K1 & K2</p>
+      <div class="hero-stats" id="heroStats">
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="statClubs">—</div>
+          <div class="hero-stat-label">สโมสร</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="statMatches">—</div>
+          <div class="hero-stat-label">นัดแล้ว</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="statGoals">—</div>
+          <div class="hero-stat-label">ประตูรวม</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <div class="container main-content">
+    <div class="grid-2col">
+
+      <!-- LEFT: RECENT MATCHES -->
+      <div>
+        <div class="section-header">
+          <h2>ผลการแข่งขันล่าสุด</h2>
+          <div class="line"></div>
+          <a href="results.html">ดูทั้งหมด →</a>
+        </div>
+
+        <div class="league-tabs">
+          <button class="tab-btn active" data-league="all" onclick="filterHomeMatches('all', this)">ทั้งหมด</button>
+          <button class="tab-btn" data-league="K1" onclick="filterHomeMatches('K1', this)">K리그1</button>
+          <button class="tab-btn" data-league="K2" onclick="filterHomeMatches('K2', this)">K리그2</button>
+        </div>
+
+        <div class="match-list" id="recentMatchesList">
+          <!-- skeleton -->
+          <div class="skeleton skeleton-row"></div>
+          <div class="skeleton skeleton-row"></div>
+          <div class="skeleton skeleton-row"></div>
+          <div class="skeleton skeleton-row"></div>
+          <div class="skeleton skeleton-row"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: STANDINGS MINI -->
+      <div>
+        <div class="card" style="margin-bottom: 20px;">
+          <div class="card-header">
+            <h2>ตารางคะแนน K리그1</h2>
+            <a href="standings.html">ดูเต็ม →</a>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="standings-table" id="miniStandingsK1">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>สโมสร</th>
+                  <th class="center">แข่ง</th>
+                  <th class="center">คะแนน</th>
+                </tr>
+              </thead>
+              <tbody id="miniStandingsK1Body">
+                <tr><td colspan="4"><div class="skeleton skeleton-row" style="height:36px;margin:4px 0"></div></td></tr>
+                <tr><td colspan="4"><div class="skeleton skeleton-row" style="height:36px;margin:4px 0"></div></td></tr>
+                <tr><td colspan="4"><div class="skeleton skeleton-row" style="height:36px;margin:4px 0"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>ตารางคะแนน K리그2</h2>
+            <a href="standings.html?league=K2">ดูเต็ม →</a>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="standings-table" id="miniStandingsK2">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>สโมสร</th>
+                  <th class="center">แข่ง</th>
+                  <th class="center">คะแนน</th>
+                </tr>
+              </thead>
+              <tbody id="miniStandingsK2Body">
+                <tr><td colspan="4"><div class="skeleton skeleton-row" style="height:36px;margin:4px 0"></div></td></tr>
+                <tr><td colspan="4"><div class="skeleton skeleton-row" style="height:36px;margin:4px 0"></div></td></tr>
+                <tr><td colspan="4"><div class="skeleton skeleton-row" style="height:36px;margin:4px 0"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p><strong>K-League Thai</strong> — ฐานข้อมูลฟุตบอลเคลีกภาษาไทย</p>
+    <p style="margin-top:6px;">ข้อมูลไม่ใช่ทางการ | ทำโดยแฟนบอล</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/index.js"></script>
+</body>
+</html>

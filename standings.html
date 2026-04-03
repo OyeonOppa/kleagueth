@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ตารางคะแนน — K-League Thai</title>
+  <meta name="description" content="ตารางคะแนนฟุตบอลเคลีก K1 K2 ฤดูกาล 2025 ภาษาไทย">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">K<span>-League</span><span class="nav-logo-badge">TH</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">หน้าแรก</a></li>
+        <li><a href="standings.html" class="active">ตารางคะแนน</a></li>
+        <li><a href="results.html">ผลการแข่งขัน</a></li>
+        <li><a href="clubs.html">สโมสร</a></li>
+      </ul>
+      <span class="nav-season">ฤดูกาล 2025</span>
+      <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <h1>ตารางคะแนน</h1>
+    <p>K리그1 & K리그2 ฤดูกาล 2025</p>
+  </div>
+
+  <div class="container main-content">
+
+    <div class="league-tabs" style="margin-bottom:24px;">
+      <button class="tab-btn active" data-league="K1" onclick="switchLeague('K1', this)">K리그1</button>
+      <button class="tab-btn" data-league="K2" onclick="switchLeague('K2', this)">K리그2</button>
+    </div>
+
+    <!-- K1 STANDINGS -->
+    <div id="standingsK1">
+      <div class="card">
+        <div class="card-header">
+          <h2>K리그1 — ตารางคะแนน</h2>
+          <span style="font-size:13px;color:var(--text-muted);" id="k1UpdatedAt"></span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="standings-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>สโมสร</th>
+                <th class="center" title="นัดที่แข่ง">แข่ง</th>
+                <th class="center" title="ชนะ">ช</th>
+                <th class="center" title="เสมอ">ส</th>
+                <th class="center" title="แพ้">แ</th>
+                <th class="center" title="ประตูได้">ปได้</th>
+                <th class="center" title="ประตูเสีย">ปเสีย</th>
+                <th class="center" title="ต่างประตู">ต่าง</th>
+                <th class="center" title="คะแนน">แต้ม</th>
+                <th>ฟอร์ม</th>
+              </tr>
+            </thead>
+            <tbody id="standingsK1Body">
+              <tr><td colspan="11"><div class="skeleton skeleton-row" style="height:40px;margin:2px 0;"></div></td></tr>
+              <tr><td colspan="11"><div class="skeleton skeleton-row" style="height:40px;margin:2px 0;"></div></td></tr>
+              <tr><td colspan="11"><div class="skeleton skeleton-row" style="height:40px;margin:2px 0;"></div></td></tr>
+              <tr><td colspan="11"><div class="skeleton skeleton-row" style="height:40px;margin:2px 0;"></div></td></tr>
+              <tr><td colspan="11"><div class="skeleton skeleton-row" style="height:40px;margin:2px 0;"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-body">
+          <div class="standings-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#ffd700;"></div> แชมป์</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#003087;"></div> AFC Champions League Elite</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#5b8dd9;"></div> AFC Champions League 2</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#ff9500;"></div> เพลย์ออฟ</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#e8003d;"></div> ตกชั้น/เพลย์ออฟตกชั้น</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- K2 STANDINGS -->
+    <div id="standingsK2" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <h2>K리그2 — ตารางคะแนน</h2>
+          <span style="font-size:13px;color:var(--text-muted);" id="k2UpdatedAt"></span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="standings-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>สโมสร</th>
+                <th class="center">แข่ง</th>
+                <th class="center">ช</th>
+                <th class="center">ส</th>
+                <th class="center">แ</th>
+                <th class="center">ปได้</th>
+                <th class="center">ปเสีย</th>
+                <th class="center">ต่าง</th>
+                <th class="center">แต้ม</th>
+                <th>ฟอร์ม</th>
+              </tr>
+            </thead>
+            <tbody id="standingsK2Body">
+              <tr><td colspan="11"><div class="skeleton skeleton-row" style="height:40px;margin:2px 0;"></div></td></tr>
+              <tr><td colspan="11"><div class="skeleton skeleton-row" style="height:40px;margin:2px 0;"></div></td></tr>
+              <tr><td colspan="11"><div class="skeleton skeleton-row" style="height:40px;margin:2px 0;"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-body">
+          <div class="standings-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#ffd700;"></div> เลื่อนชั้น K1</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#003087;"></div> เลื่อนชั้น K1 (อัตโนมัติ)</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#ff9500;"></div> เพลย์ออฟเลื่อนชั้น</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#e8003d;"></div> ตกชั้น</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p><strong>K-League Thai</strong> — ฐานข้อมูลฟุตบอลเคลีกภาษาไทย</p>
+    <p style="margin-top:6px;">ข้อมูลไม่ใช่ทางการ | ทำโดยแฟนบอล</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/standings.js"></script>
+</body>
+</html>

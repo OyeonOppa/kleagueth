@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ข้อมูลสโมสร — K-League Thai</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .players-filter {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .pos-filter-btn {
+      padding: 6px 16px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--card);
+      font-family: 'Sarabun', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-muted);
+    }
+
+    .pos-filter-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .pos-filter-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.7);
+      font-size: 13px;
+      margin-bottom: 16px;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: #fff; }
+
+    .squad-count {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">K<span>-League</span><span class="nav-logo-badge">TH</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">หน้าแรก</a></li>
+        <li><a href="standings.html">ตารางคะแนน</a></li>
+        <li><a href="results.html">ผลการแข่งขัน</a></li>
+        <li><a href="clubs.html" class="active">สโมสร</a></li>
+      </ul>
+      <span class="nav-season">ฤดูกาล 2025</span>
+      <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <!-- Club Hero -->
+  <div class="club-hero" id="clubHero">
+    <div class="club-hero-inner">
+      <div style="flex:1;">
+        <a href="clubs.html" class="back-link">← กลับไปรายชื่อสโมสร</a>
+        <div style="display:flex;align-items:center;gap:20px;">
+          <div id="clubHeroLogo"></div>
+          <div class="club-hero-info">
+            <h1 id="clubNameTh">กำลังโหลด...</h1>
+            <p class="subtitle" id="clubNameEn"></p>
+            <div class="club-meta-tags" id="clubMetaTags"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container main-content">
+
+    <!-- Club Info Grid -->
+    <div class="club-info-grid" id="clubInfoGrid">
+      <div class="skeleton" style="height:72px;border-radius:6px;"></div>
+      <div class="skeleton" style="height:72px;border-radius:6px;"></div>
+      <div class="skeleton" style="height:72px;border-radius:6px;"></div>
+      <div class="skeleton" style="height:72px;border-radius:6px;"></div>
+    </div>
+
+    <!-- Players Section -->
+    <div class="section-header" style="margin-top:8px;">
+      <h2>รายชื่อผู้เล่น</h2>
+      <div class="line"></div>
+      <span class="squad-count" id="squadCount"></span>
+    </div>
+
+    <div class="players-filter">
+      <button class="pos-filter-btn active" data-pos="all" onclick="filterPlayers('all', this)">ทั้งหมด</button>
+      <button class="pos-filter-btn" data-pos="GK" onclick="filterPlayers('GK', this)">ผู้รักษาประตู</button>
+      <button class="pos-filter-btn" data-pos="DF" onclick="filterPlayers('DF', this)">กองหลัง</button>
+      <button class="pos-filter-btn" data-pos="MF" onclick="filterPlayers('MF', this)">กองกลาง</button>
+      <button class="pos-filter-btn" data-pos="FW" onclick="filterPlayers('FW', this)">กองหน้า</button>
+    </div>
+
+    <div class="card" style="overflow-x:auto;">
+      <table class="player-table" id="playerTable">
+        <thead>
+          <tr>
+            <th style="text-align:center;">#</th>
+            <th>ชื่อ (ภาษาไทย)</th>
+            <th>ชื่อ (ภาษาเกาหลี/อังกฤษ)</th>
+            <th>ตำแหน่ง</th>
+            <th>สัญชาติ</th>
+            <th>วันเกิด</th>
+          </tr>
+        </thead>
+        <tbody id="playerTableBody">
+          <tr><td colspan="6"><div class="skeleton skeleton-row" style="height:40px;margin:2px 0;"></div></td></tr>
+          <tr><td colspan="6"><div class="skeleton skeleton-row" style="height:40px;margin:2px 0;"></div></td></tr>
+          <tr><td colspan="6"><div class="skeleton skeleton-row" style="height:40px;margin:2px 0;"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <footer>
+    <p><strong>K-League Thai</strong> — ฐานข้อมูลฟุตบอลเคลีกภาษาไทย</p>
+    <p style="margin-top:6px;">ข้อมูลไม่ใช่ทางการ | ทำโดยแฟนบอล</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/club-detail.js"></script>
+</body>
+</html>
