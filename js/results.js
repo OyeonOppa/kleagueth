@@ -75,19 +75,32 @@ function renderMatches(matches) {
     return;
   }
 
-  // Group by date
+  // Group by date — ดึง YYYY-MM-DD key อย่างปลอดภัย
+  function getDateKey(dateStr) {
+    if (!dateStr) return null;
+    const s = String(dateStr).trim();
+    const m = s.match(/(\d{4})-(\d{2})-(\d{2})/);
+    if (m) return `${m[1]}-${m[2]}-${m[3]}`; // 'YYYY-MM-DD' ใช้เป็น key sort ได้เลย
+    // ถ้าไม่มี format นี้ ให้ parse แล้วสร้าง key ใหม่
+    const d = new Date(s);
+    if (isNaN(d)) return null;
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
   const groups = {};
   matches.forEach(m => {
-    const key = m.date ? m.date.split('T')[0] : 'ไม่ระบุวันที่';
+    const key = getDateKey(m.date) || '__unknown__';
     if (!groups[key]) groups[key] = [];
     groups[key].push(m);
   });
 
   let html = '';
   Object.entries(groups)
-    .sort(([a], [b]) => b.localeCompare(a))
-    .forEach(([date, ms]) => {
-      html += `<div class="match-day-header">${formatDate(date)} — ${ms.length} นัด</div>`;
+    // เรียงวันล่าสุดก่อน — ใช้ string comparison ตรงๆ (YYYY-MM-DD sort ได้เลย)
+    .sort(([a], [b]) => (a === '__unknown__' ? 1 : b === '__unknown__' ? -1 : b > a ? 1 : b < a ? -1 : 0))
+    .forEach(([dateKey, ms]) => {
+      const label = dateKey === '__unknown__' ? 'ไม่ระบุวันที่' : formatDate(dateKey);
+      html += `<div class="match-day-header">${label} — ${ms.length} นัด</div>`;
       ms.forEach(m => { html += renderMatchCard(m); });
     });
 

@@ -2,23 +2,44 @@
 // Utility Functions
 // ===================================================
 
+// แปลง date string หลาย format → Date object ที่ไม่มีปัญหา timezone
+// รองรับ: 'YYYY-MM-DD', 'YYYY-MM-DDTHH:mm:ss', Google Sheets date string ฯลฯ
+function parseDateSafe(dateStr) {
+  if (!dateStr) return null;
+  const s = String(dateStr).trim();
+  if (!s) return null;
+
+  // ดึงเฉพาะส่วน YYYY-MM-DD ก่อน (ถ้ามี)
+  const isoMatch = s.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (isoMatch) {
+    // สร้างด้วย local date เพื่อหลีกเลี่ยง UTC timezone shift
+    return new Date(+isoMatch[1], +isoMatch[2] - 1, +isoMatch[3]);
+  }
+
+  // fallback: ให้ browser parse เอง (อาจผิด timezone แต่ดีกว่า NaN)
+  const d = new Date(s);
+  return isNaN(d) ? null : d;
+}
+
 function formatDate(dateStr) {
-  if (!dateStr) return '—';
-  const d = new Date(dateStr);
-  if (isNaN(d)) return dateStr;
+  const d = parseDateSafe(dateStr);
+  if (!d) return '—';
   return d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 function formatDateShort(dateStr) {
-  if (!dateStr) return '—';
-  const d = new Date(dateStr);
-  if (isNaN(d)) return dateStr;
+  const d = parseDateSafe(dateStr);
+  if (!d) return '—';
   return d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short' });
 }
 
 function formatTime(dateStr) {
   if (!dateStr) return '';
-  const d = new Date(dateStr);
+  const s = String(dateStr).trim();
+  // ดึงเวลาจาก ISO string (HH:mm ส่วน T...)
+  const timeMatch = s.match(/T(\d{2}:\d{2})/);
+  if (timeMatch) return timeMatch[1];
+  const d = new Date(s);
   if (isNaN(d)) return '';
   return d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
 }

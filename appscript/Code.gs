@@ -12,12 +12,11 @@
 
 const SPREADSHEET_ID = SpreadsheetApp.getActiveSpreadsheet().getId();
 
-// ชื่อ Sheet ใน Google Sheets
+// ชื่อ Sheet ใน Google Sheets (ไม่มี Standings แล้ว — คำนวณจาก Matches อัตโนมัติ)
 const SHEETS = {
-  CLUBS:     'Clubs',
-  PLAYERS:   'Players',
-  MATCHES:   'Matches',
-  STANDINGS: 'Standings',
+  CLUBS:   'Clubs',
+  PLAYERS: 'Players',
+  MATCHES: 'Matches',
 };
 
 // ===================================================
@@ -97,37 +96,102 @@ function getClubsMap() {
 }
 
 // ===================================================
-// STANDINGS
+// STANDINGS — คำนวณอัตโนมัติจากผลการแข่งขันใน Matches sheet
+// แค่กรอกผลแมตช์ (home_score / away_score) แล้ว status = 'completed'
+// ตารางคะแนนจะอัปเดตให้เองทันที โดยไม่ต้องแก้ Standings sheet
 // ===================================================
 
 function getStandings(league, season) {
-  const rows = getSheetData(SHEETS.STANDINGS);
-  const clubsMap = getClubsMap(); // ดึงข้อมูลสโมสรมา join
+  const matches  = getSheetData(SHEETS.MATCHES);
+  const clubsMap = getClubsMap();
 
-  let filtered = rows.filter(r => r.season === season);
-  if (league) filtered = filtered.filter(r => r.league === league);
+  // กรอง: เฉพาะนัดที่จบแล้ว (completed) ในฤดูกาลและลีกที่ต้องการ
+  let completed = matches.filter(r =>
+    r.season === season && r.status === 'completed'
+  );
+  if (league) completed = completed.filter(r => r.league === league);
 
-  const standings = filtered
-    .sort((a, b) => parseInt(a.rank) - parseInt(b.rank))
-    .map(r => {
-      const club = clubsMap[r.club_id] || {}; // join จาก Clubs sheet
+  // สะสมสถิติของแต่ละสโมสร
+  const stats = {}; // { club_id: { league, played, won, drawn, lost, gf, ga, matchDates[] } }
+
+  completed.forEach(r => {
+    const hScore = parseInt(r.home_score);
+    const aScore = parseInt(r.away_score);
+    if (isNaN(hScore) || isNaN(aScore)) return; // ข้ามถ้าคะแนนไม่ถูกต้อง
+
+    const hId = r.home_club_id;
+    const aId = r.away_club_id;
+
+    if (!stats[hId]) stats[hId] = { league: r.league, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, matches: [] };
+    if (!stats[aId]) stats[aId] = { league: r.league, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, matches: [] };
+
+    // เพิ่มสถิติ
+    stats[hId].played++; stats[hId].gf += hScore; stats[hId].ga += aScore;
+    stats[aId].played++; stats[aId].gf += aScore; stats[aId].ga += hScore;
+
+    if (hScore > aScore) {
+      stats[hId].won++;  stats[hId].matches.push({ date: r.date, result: 'W' });
+      stats[aId].lost++; stats[aId].matches.push({ date: r.date, result: 'L' });
+    } else if (hScore === aScore) {
+      stats[hId].drawn++; stats[hId].matches.push({ date: r.date, result: 'D' });
+      stats[aId].drawn++; stats[aId].matches.push({ date: r.date, result: 'D' });
+    } else {
+      stats[hId].lost++; stats[hId].matches.push({ date: r.date, result: 'L' });
+      stats[aId].won++;  stats[aId].matches.push({ date: r.date, result: 'W' });
+    }
+  });
+
+  // ถ้า league ระบุ — ดึงสโมสรทั้งหมดในลีกนั้นจาก Clubs sheet
+  // เพื่อให้ทีมที่ยังไม่ได้แข่งปรากฏในตารางด้วย (0 แต้ม)
+  const allClubs = getSheetData(SHEETS.CLUBS);
+  const leagueClubs = league
+    ? allClubs.filter(c => c.league === league)
+    : allClubs;
+
+  leagueClubs.forEach(c => {
+    if (!stats[c.club_id]) {
+      stats[c.club_id] = { league: c.league, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, matches: [] };
+    }
+  });
+
+  // แปลงเป็น array แล้วเรียงตามกฎตารางคะแนน
+  // 1. แต้ม (W=3, D=1) → 2. ผลต่างประตู → 3. ประตูได้ → 4. ชื่อ A-Z
+  const standings = Object.entries(stats)
+    .map(([clubId, s]) => {
+      const club    = clubsMap[clubId] || {};
+      const points  = s.won * 3 + s.drawn;
+      const gd      = s.gf - s.ga;
+      // form: 5 นัดล่าสุด เรียงจากล่าสุดก่อน
+      const form = s.matches
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 5)
+        .map(m => m.result)
+        .join('');
+
       return {
-        club_id:  r.club_id,
-        name_th:  club.name_th  || r.name_th  || r.club_id, // fallback ถ้าไม่มีใน Clubs
-        name_en:  club.name_en  || r.name_en  || '',
-        logo_url: club.logo_url || r.logo_url || '',
-        league:   r.league,
-        played:   parseInt(r.played) || 0,
-        won:      parseInt(r.won)    || 0,
-        drawn:    parseInt(r.drawn)  || 0,
-        lost:     parseInt(r.lost)   || 0,
-        gf:       parseInt(r.gf)     || 0,
-        ga:       parseInt(r.ga)     || 0,
-        gd:       parseInt(r.gd)     || 0,
-        points:   parseInt(r.points) || 0,
-        form:     r.form || '',
+        club_id:  clubId,
+        name_th:  club.name_th  || clubId,
+        name_en:  club.name_en  || '',
+        logo_url: club.logo_url || '',
+        league:   s.league,
+        played:   s.played,
+        won:      s.won,
+        drawn:    s.drawn,
+        lost:     s.lost,
+        gf:       s.gf,
+        ga:       s.ga,
+        gd:       gd,
+        points:   points,
+        form:     form,
       };
-    });
+    })
+    .sort((a, b) =>
+      b.points - a.points ||
+      b.gd     - a.gd     ||
+      b.gf     - a.gf     ||
+      a.name_en.localeCompare(b.name_en)
+    )
+    .map((row, i) => ({ rank: i + 1, ...row })); // ใส่ลำดับอัตโนมัติ
 
   return { standings, updated_at: new Date().toISOString() };
 }
@@ -256,8 +320,8 @@ function setup() {
   // สร้าง temp sheet ค้างไว้ก่อน เพื่อป้องกัน error "ลบชีตใบสุดท้ายไม่ได้"
   const tempSheet = ss.insertSheet('_setup_temp_');
 
-  // ลบชีตเดิม (ถ้ามี)
-  const sheetNames = [SHEETS.CLUBS, SHEETS.PLAYERS, SHEETS.MATCHES, SHEETS.STANDINGS];
+  // ลบชีตเดิม (ถ้ามี) — ไม่รวม Standings เพราะคำนวณจาก Matches แล้ว
+  const sheetNames = [SHEETS.CLUBS, SHEETS.PLAYERS, SHEETS.MATCHES];
   sheetNames.forEach(name => {
     const existing = ss.getSheetByName(name);
     if (existing) ss.deleteSheet(existing);
@@ -269,16 +333,15 @@ function setup() {
     if (s) ss.deleteSheet(s);
   });
 
-  // สร้างชีตใหม่ทั้งหมด
+  // สร้างชีตใหม่ทั้งหมด (ไม่ต้องสร้าง Standings sheet แล้ว)
   setupClubs(ss);
   setupPlayers(ss);
   setupMatches(ss);
-  setupStandings(ss);
 
   // ลบ temp sheet ออก
   ss.deleteSheet(ss.getSheetByName('_setup_temp_'));
 
-  SpreadsheetApp.getUi().alert('✅ Setup เสร็จแล้ว!\n\nสร้างชีตและข้อมูลตัวอย่างครบทั้ง 4 ชีต:\n• Clubs (22 สโมสร)\n• Players (ตัวอย่าง 5 คน)\n• Matches (ตัวอย่าง 10 นัด)\n• Standings (K1 + K2)\n\nตอนนี้สามารถ Deploy เป็น Web App ได้เลย!');
+  SpreadsheetApp.getUi().alert('✅ Setup เสร็จแล้ว!\n\nสร้างชีตและข้อมูลตัวอย่างครบ:\n• Clubs (22 สโมสร)\n• Players (ตัวอย่าง 5 คน)\n• Matches (ตัวอย่าง 10 นัด)\n\n💡 ตารางคะแนนคำนวณอัตโนมัติจาก Matches sheet\n   แค่กรอก home_score / away_score แล้วตั้ง status = completed\n   ระบบจัดอันดับให้เองโดยไม่ต้องแก้ Standings sheet\n\nตอนนี้สามารถ Deploy เป็น Web App ได้เลย!');
 }
 
 function setupClubs(ss) {
