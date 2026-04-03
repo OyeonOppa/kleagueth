@@ -79,17 +79,18 @@ img {
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: #fff;
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
+  gap: 8px;
   margin-right: 32px;
   flex-shrink: 0;
+  text-decoration: none;
 }
 
-.nav-logo span {
-  color: var(--accent);
+.nav-logo-img {
+  height: 36px;
+  width: auto;
+  display: block;
+  /* โลโก้ K-League เป็นสีเข้ม ทำให้สว่างขึ้นให้เห็นบน navbar สีน้ำเงินเข้ม */
+  filter: brightness(0) invert(1);
 }
 
 .nav-logo-badge {
@@ -100,6 +101,8 @@ img {
   padding: 2px 5px;
   border-radius: 3px;
   letter-spacing: 0.5px;
+  align-self: flex-start;
+  margin-top: 4px;
 }
 
 .nav-links {
